@@ -1,0 +1,58 @@
+select party id, name, location from congress_members where location like "%nj%";
+select votes.created_at, congress_members.id, congress_members.name, congress_members.location, count(votes.politician_id) from congress_members join votes on congress_members.id = votes.politician_id where congress_members.location like "%nj%" group by votes.politician_id order by congress_members.id ASC;
+
+
+//vote id senator 521 dan 525
+
+release 0
+nomor 1
+insert into voters values(null, "dharmadi", "tanamas", "male", "hacktiv", 100, 23, 0, 0, 0, 0, "2012-10-10 16:25:32 -0700", "2012-10-10 16:25:32 -0700");
+insert into voters values(null, "orang", "baru", "female", "hacktiv", 100, 22, 0, 0, 0, 0, "2012-10-10 16:25:32 -0700", "2012-10-10 16:25:32 -0700");
+insert into votes values(null, 5001, 521, datetime(), datetime());
+insert into votes values(null, 5002, 525, datetime(), datetime());
+
+nomor 2
+//hapus leonard lance
+delete from congress_members where id = 513;
+insert into congress_members values(null, "Donal Trump", "R", "NJ", 14.19092269, 15.65222025,9,0.209, datetime(), datetime());
+
+
+  insert into votes values(null, 1, 531, datetime(), datetime());
+  insert into votes values(null, 2, 531, datetime(), datetime());
+  insert into votes values(null, 3, 531, datetime(), datetime());
+  insert into votes values(null, 4, 531, datetime(), datetime());
+  insert into votes values(null, 5, 531, datetime(), datetime());
+  insert into votes values(null, 6, 531, datetime(), datetime());
+  insert into votes values(null, 7, 531, datetime(), datetime());
+  insert into votes values(null, 8, 531, datetime(), datetime());
+  insert into votes values(null, 9, 531, datetime(), datetime());
+  insert into votes values(null, 10, 531, datetime(), datetime());
+  insert into votes values(null, 11, 531, datetime(), datetime());
+  insert into votes values(null, 12, 531, datetime(), datetime());
+  insert into votes values(null, 13, 531, datetime(), datetime());
+  insert into votes values(null, 14, 531, datetime(), datetime());
+  insert into votes values(null, 15, 531, datetime(), datetime());
+  insert into votes values(null, 16, 531, datetime(), datetime());
+
+
+release 1
+nomor 1
+select voters.first_name, voters.party, count(votes.voter_id) as total from voters join votes on voters.id = votes.voter_id where (party not like "%republican%" and party not like "%democrat%") group by votes.voter_id having count(votes.voter_id) = 1;
+delete from voters join votes on voters.id = votes.voter_id where (party not like "%republican%" and party not like "%democrat%") group by votes.voter_id having count(votes.voter_id) = 1;
+
+nomor 2
+select voters.first_name, voters.party, count(votes.voter_id) as total from voters join votes on voters.id = votes.voter_id join congress_members on congress_members.id = votes.politician_id where (homeowner = 1 and employed = 1 and children_count = 0 and party_duration < 3 and grade_current > 12) group by votes.voter_id;
+
+
+release 2
+nomor 1
+select voters.first_name, voters.gender, voters.age, voters.children_count from voters join votes on voters.id = votes.voter_id where voters.gender like "male" and voters.age > 80 and children_count = 0;
+
+nomor 2
+select congress_members.id, congress_members.name, count(politician_id), congress_members.dw1_score from congress_members join votes on congress_members.id = votes.politician_id join voters on voters.id = votes.voter_id where congress_members.dw1_score = (select congress_members.dw1_score from congress_members order by congress_members.dw1_score desc limit 1) group by votes.politician_id;
+//id 22
+select congress_members.id, congress_members.name, count(politician_id), congress_members.dw1_score from congress_members join votes on congress_members.id = votes.politician_id join voters on voters.id = votes.voter_id where congress_members.dw1_score = (select congress_members.dw1_score from congress_members order by congress_members.dw1_score asc limit 1) group by votes.politician_id;
+//id 441
+select voters.id, voters.first_name, congress_members.id, congress_members.name, count(politician_id), congress_members.dw1_score, voters.first_name from congress_members join votes on congress_members.id = votes.politician_id join voters on voters.id = votes.voter_id where congress_members.dw1_score = (select congress_members.dw1_score from congress_members order by congress_members.dw1_score desc limit 1) group by votes.politician_id, votes.voter_id;
+
+update votes set politician_id = 441 where voter_id in (select voters.id from congress_members join votes on congress_members.id = votes.politician_id join voters on voters.id = votes.voter_id where congress_members.dw1_score = (select congress_members.dw1_score from congress_members order by congress_members.dw1_score desc limit 1) group by votes.politician_id, votes.voter_id);
